@@ -4,6 +4,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#define bufferSize 1024
+#define BUFFER_SIZE  42
 
 #endif

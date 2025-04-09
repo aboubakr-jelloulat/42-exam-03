@@ -1,48 +1,77 @@
 #include "filter.h"
 
-int ft_strlen(char *str)
+int	ft_strlen(const char *s)
 {
 	int i = 0;
-	for ( ; str[i]; i++)
+
+	while (s[i])
+		i++;
 	return i;
 }
 
-
-void ft_filter(char *src, char *replace, int srcLength)
+void	ReplaceString(char *StringReplace, int ReplaceStringLenght)
 {
-	replaceLength =
+	for (int i = 0; i < ReplaceStringLenght; i++)  
+		StringReplace[i] = '*';
+	
+}
 
-	for (int i = 0; src[i]; )
+int	IsAccesableToReplace(char *UserInput, char *Replace)
+{
+	int i = 0;
+
+	while (Replace[i] && UserInput[i])
 	{
-		
+		if (UserInput[i] != Replace[i])
+			return 0;
+		i++;
+	}
+	return 1;
+}
+
+void solve(char *UserInput, char *Replace)
+{
+	int	ReplaceStringLenght = ft_strlen(Replace);
+
+	for (int i = 0; UserInput[i]; )
+	{
+		if (IsAccesableToReplace(&UserInput[i], Replace))
+		{
+			ReplaceString(&UserInput[i], ReplaceStringLenght);
+			i += ReplaceStringLenght;
+		}
+		else
+			i++;
+
 	}
 
 }
 
 int main(int ac, char **av)
 {
-	char buffer[bufferSize + 1];
-	int  bytes_read = 0;
 
 	if (ac != 2)
 		return 1;
 
+	char	buffer[BUFFER_SIZE + 1];
+	int		bytes;
+
 	while (1)
 	{
-		bytes_read = read(0, buffer, bufferSize);
-
-		if (!bytes_read)
-			break ;
-		else if (bytes_read > 0)
+		bytes = read(0, buffer, BUFFER_SIZE);
+		switch (bytes)
 		{
-			ft_filter(buffer, av[1], bytes_read);
-			write(1, buffer, bytes_read);
+			case 0 :
+				break;
+			
+			case -1 :
+				return (perror("Error: "), 1);
+			
+			default : 
+				solve(buffer, av[1]);
+				write (1, buffer, bytes);
 		}
-		else
-			return (perror("Error: "), 1);
-
 	}
-
 
 	return 0;
 }

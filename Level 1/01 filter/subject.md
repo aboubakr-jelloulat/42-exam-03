@@ -18,6 +18,8 @@ For example :
 will behave the same way as :
 sed 's/bonjour/*******/g'
 
+
+
 ./filter abc
 will behave the same way as :
 sed 's/abc/***/g'
@@ -34,4 +36,4 @@ $> echo 'abcdefaaaabcdeabcabcdabc' | ./filter abc | cat -e
 ***defaaa***de******d***$
 
 $> echo 'ababcabababc' | ./a.out ababc | cat -e
-*****ab*****$
+*****ab*****$   

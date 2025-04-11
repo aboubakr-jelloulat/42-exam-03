@@ -35,8 +35,6 @@ Dont have to handle the maximum field width
 Dont have to handle the types modifier characters (h, hh, l...)
 Dont have to handle the conversations beginning with %n$
 Your function int ft_scanf(const char *format, ...);
-
-
 #include <stdarg.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -127,10 +125,11 @@ int ft_vfscanf(FILE *f, const char *format, va_list ap)
 
 int ft_scanf(const char *format, ...)
 {
-	// ...
+	va_list ap;
+	va_start(ap, format);
 	int ret = ft_vfscanf(stdin, format, ap);
-	// ...
-	return ret;
+	va_end(ap);
+	return (ret);
 }
 
 

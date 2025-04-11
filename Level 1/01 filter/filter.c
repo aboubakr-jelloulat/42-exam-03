@@ -1,77 +1,74 @@
-#include "filter.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
 
-int	ft_strlen(const char *s)
+#ifndef BUFFER_SIZE
+#define BUFFER_SIZE 42
+#endif
+
+
+void    ReplaceString(char *UserInput, int ReplaceLenght)
 {
-	int i = 0;
-
-	while (s[i])
-		i++;
-	return i;
+    for (int i = 0; i < ReplaceLenght; i++)
+        UserInput[i] = '*';
+    
 }
 
-void	ReplaceString(char *StringReplace, int ReplaceStringLenght)
+int CheckIsValidToReplace(char *Replace, char *UserInput)
 {
-	for (int i = 0; i < ReplaceStringLenght; i++)  
-		StringReplace[i] = '*';
-	
+    int i = 0;
+
+    while (Replace[i] && UserInput[i])
+    {
+        if (UserInput[i] != Replace[i])
+            return 0;
+        i++;
+    }
+    
+    return 1;
 }
 
-int	IsAccesableToReplace(char *UserInput, char *Replace)
+void filter(char *Replace, char *UserInput)
 {
-	int i = 0;
+    int ReplaceLenght = strlen(Replace);
 
-	while (Replace[i] && UserInput[i])
-	{
-		if (UserInput[i] != Replace[i])
-			return 0;
-		i++;
-	}
-	return 1;
-}
+    for (int i = 0; i < strlen(UserInput); )
+    {
 
-void solve(char *UserInput, char *Replace)
-{
-	int	ReplaceStringLenght = ft_strlen(Replace);
-
-	for (int i = 0; UserInput[i]; )
-	{
-		if (IsAccesableToReplace(&UserInput[i], Replace))
-		{
-			ReplaceString(&UserInput[i], ReplaceStringLenght);
-			i += ReplaceStringLenght;
-		}
-		else
-			i++;
-
-	}
-
+        if (CheckIsValidToReplace(Replace, &UserInput[i]))
+        {
+            ReplaceString(&UserInput[i], ReplaceLenght);
+            i += ReplaceLenght;
+        }
+        else
+            i++;
+    }
 }
 
 int main(int ac, char **av)
 {
+    if (ac != 2)
+        return 1;
 
-	if (ac != 2)
-		return 1;
+    int bytes;
+    char buffer[10240];
+    while (1)
+    {
+        bytes = read(0, buffer, BUFFER_SIZE);
 
-	char	buffer[BUFFER_SIZE + 1];
-	int		bytes;
+        switch (bytes)
+        {
+            case 0:
+                break;
 
-	while (1)
-	{
-		bytes = read(0, buffer, BUFFER_SIZE);
-		switch (bytes)
-		{
-			case 0 :
-				break;
-			
-			case -1 :
-				return (perror("Error: "), 1);
-			
-			default : 
-				solve(buffer, av[1]);
-				write (1, buffer, bytes);
-		}
-	}
+            case -1:
+                return (perror("Error: "), 1);
 
-	return 0;
+            default:
+                filter(av[1], buffer);
+                printf("%s", buffer);
+        }
+    }
+
+    return 0;
 }
